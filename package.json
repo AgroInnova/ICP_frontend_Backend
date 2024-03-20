@@ -9,10 +9,16 @@
     "prebuild": "npm run prebuild --workspaces --if-present",
     "pretest": "npm run prebuild --workspaces --if-present",
     "start": "npm start --workspaces --if-present",
-    "test": "npm test --workspaces --if-present"
+    "test": "npm test --workspaces --if-present",
+    "ionicDev": "bash createEnv.sh && cd src/Frontend && ionic serve"
   },
   "type": "module",
   "workspaces": [
-    "src/ICP_frontend_backend_FULL_backend"
-  ]
+    "src/ICP_frontend_backend_FULL_backend",
+    "src/Frontend"
+  ],
+  "devDependencies": {
+    "@types/cors": "^2.8.17",
+    "@types/express": "^4.17.21"
+  }
 }
