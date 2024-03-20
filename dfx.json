@@ -1,0 +1,31 @@
+{
+  "canisters": {
+    "ICP_frontend_backend_FULL_backend": {
+      "build": "npx azle ICP_frontend_backend_FULL_backend",
+      "candid": "src/ICP_frontend_backend_FULL_backend/ICP_frontend_backend_FULL_backend.did",
+      "gzip": true,
+      "main": "src/ICP_frontend_backend_FULL_backend/src/index.ts",
+      "type": "custom",
+      "wasm": ".azle/ICP_frontend_backend_FULL_backend/ICP_frontend_backend_FULL_backend.wasm"
+    },
+    "internet_identity": {
+      "candid": "https://github.com/dfinity/internet-identity/releases/latest/download/internet_identity.did",
+      "frontend": {},
+      "remote": {
+        "id": {
+          "ic": "rdmx6-jaaaa-aaaaa-aaadq-cai"
+        }
+      },
+      "type": "custom",
+      "wasm": "https://github.com/dfinity/internet-identity/releases/latest/download/internet_identity_dev.wasm.gz"
+    }
+  },
+  "defaults": {
+    "build": {
+      "args": "",
+      "packtool": ""
+    }
+  },
+  "output_env_file": ".env",
+  "version": 1
+}
