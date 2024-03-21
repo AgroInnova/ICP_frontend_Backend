@@ -11,5 +11,8 @@ export default Server(() => {
 		res.send(ic.caller().toString());
 	});
 
+
+	app.use(express.static('/dist'));
+
 	return app.listen();
 });

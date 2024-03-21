@@ -10,7 +10,8 @@
     "pretest": "npm run prebuild --workspaces --if-present",
     "start": "npm start --workspaces --if-present",
     "test": "npm test --workspaces --if-present",
-    "ionicDev": "bash createEnv.sh && cd src/Frontend && ionic serve"
+    "ionicDev": "bash createEnv.sh && cd src/Frontend && ionic serve",
+    "ionicBuild": "bash createEnv.sh && cd src/Frontend && npm run build"
   },
   "type": "module",
   "workspaces": [

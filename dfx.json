@@ -3,10 +3,13 @@
     "ICP_frontend_backend_FULL_backend": {
       "build": "npx azle ICP_frontend_backend_FULL_backend",
       "candid": "src/ICP_frontend_backend_FULL_backend/ICP_frontend_backend_FULL_backend.did",
+      "candid_gen": "http",
       "gzip": true,
       "main": "src/ICP_frontend_backend_FULL_backend/src/index.ts",
       "type": "custom",
-      "wasm": ".azle/ICP_frontend_backend_FULL_backend/ICP_frontend_backend_FULL_backend.wasm"
+      "wasm": ".azle/ICP_frontend_backend_FULL_backend/ICP_frontend_backend_FULL_backend.wasm",
+      "assets" : [["src/Frontend/dist", "dist"]],
+      "build_assets": "npm run ionicBuild"
     },
     "internet_identity": {
       "candid": "https://github.com/dfinity/internet-identity/releases/latest/download/internet_identity.did",
