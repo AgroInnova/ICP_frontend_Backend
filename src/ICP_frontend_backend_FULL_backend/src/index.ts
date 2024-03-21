@@ -11,8 +11,11 @@ export default Server(() => {
 		res.send(ic.caller().toString());
 	});
 
+	app.use(express.static("/dist"));
 
-	app.use(express.static('/dist'));
+	app.all("*", (req, res) => {
+		res.redirect("/");
+	});
 
 	return app.listen();
 });
