@@ -15,9 +15,11 @@ import {
 import React, { useEffect, useState } from "react";
 import Header from "../Components/Header";
 
-import { useEtherBalance, useEthers } from "@usedapp/core";
+import { useEtherBalance, useEthers, useCall, useSendTransaction } from "@usedapp/core";
 import { formatEther } from "@ethersproject/units";
 
+import { utils } from "ethers";
+import { Contract } from "@ethersproject/contracts";
 const ContractABI = [
 	{
 		inputs: [
@@ -152,22 +154,39 @@ const ContractABI = [
 	},
 ] as const;
 
+const contractInterface = new utils.Interface(ContractABI);
 const contractAdress = "0x9eb3C959ED45B6A18Bd19C88ff70220F7D95dc40";
-
-const NETWORK_ID = 534351;
+const contractEAS = new Contract(contractAdress, contractInterface);
 
 const EAS2: React.FC = () => {
 	const { account, activateBrowserWallet, deactivate, chainId } = useEthers();
 
 	const userBalance = useEtherBalance(account);
 
+	const [userID, setUserID] = useState<number>();
+
+	const [equipmentID, setEquipmentID] = useState<string>("0");
+
+	const [activationDays, setActivationDays] = useState<number>();
+
+	const [contractParams, setContractParams] =
+		useState<[number, string, number]>();
+
+	const { sendTransaction, state } = useSendTransaction();
+
 	useEffect(() => {
 		activateBrowserWallet();
 	}, []);
 
-	if (!chainId) {
-		return <>loading</>;
-	}
+	const handleSubmit = (event: React.FormEvent) => {
+		event.preventDefault();
+		if (!userID || !equipmentID || !activationDays) {
+			alert("Please fill all fields");
+
+			return;
+		}
+		setContractParams([userID, equipmentID, activationDays]);
+	};
 
 	return (
 		<>
@@ -229,13 +248,15 @@ const EAS2: React.FC = () => {
 							</IonCardContent>
 						</IonCard>
 					</IonRow>
-					<form onSubmit={() => {}}>
+					<form onSubmit={handleSubmit}>
 						<IonRow className="ion-justify-content-center">
 							<IonCard>
 								<IonCardContent>
 									<IonInput
 										type="number"
-										onIonChange={(e) => {}}
+										onIonChange={(e) => {
+											setUserID(Number(e.detail.value));
+										}}
 										placeholder="User ID"
 									></IonInput>
 								</IonCardContent>
@@ -245,8 +266,12 @@ const EAS2: React.FC = () => {
 							<IonCard>
 								<IonCardContent>
 									<IonInput
-										type="number"
-										onIonChange={(e) => {}}
+										type="text"
+										onIonChange={(e) => {
+											setEquipmentID(
+												String(e.detail.value)
+											);
+										}}
 										placeholder="Equipment ID"
 									></IonInput>
 								</IonCardContent>
@@ -257,7 +282,11 @@ const EAS2: React.FC = () => {
 								<IonCardContent>
 									<IonInput
 										type="number"
-										onIonChange={(e) => {}}
+										onIonChange={(e) => {
+											setActivationDays(
+												Number(e.detail.value)
+											);
+										}}
 										placeholder="Activation Days"
 									></IonInput>
 								</IonCardContent>
@@ -270,10 +299,6 @@ const EAS2: React.FC = () => {
 
 					<IonRow className="ion-justify-content-center">
 						<IonButton>Seleccionar usuario</IonButton>
-					</IonRow>
-
-					<IonRow className="ion-justify-content-center">
-						<IonButton onClick={() => {}}>Disconnect</IonButton>
 					</IonRow>
 				</IonCol>
 			</IonGrid>
