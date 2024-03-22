@@ -25,35 +25,55 @@ import LoginPage from "./pages/LoginPage";
 import { AuthClientProvider } from "./AuthClientProvider";
 import EAS from "./pages/EAS";
 import Logout from "./pages/Logout";
+import EAS2 from "./pages/EAS copy";
+
+import {
+	Mainnet,
+	DAppProvider,
+	Config,
+	ScrollSepoliaTestnet
+} from "@usedapp/core";
+import { getDefaultProvider } from "ethers";
+
+const NodeURL = ScrollSepoliaTestnet.rpcUrl as string;
+
+const config: Config = {
+	readOnlyChainId: ScrollSepoliaTestnet.chainId,
+	readOnlyUrls: {
+		[ScrollSepoliaTestnet.chainId]: NodeURL,
+	},
+};
 
 setupIonicReact();
 
 const App: React.FC = () => {
 	return (
-		<AuthClientProvider>
-			<IonApp>
-				<IonReactRouter>
-					<IonRouterOutlet>
-						<Route exact path="/login">
-							<LoginPage />
-						</Route>
-						<Route exact path="/home">
-							<Home />
-						</Route>
-						<Route exact path="/">
-							<Redirect to="/login" />
-						</Route>
-						<Route exact path="/EAS">
-							<EAS />
-						</Route>
+		<DAppProvider config={config}>
+			<AuthClientProvider>
+				<IonApp>
+					<IonReactRouter>
+						<IonRouterOutlet>
+							<Route exact path="/login">
+								<LoginPage />
+							</Route>
+							<Route exact path="/home">
+								<Home />
+							</Route>
+							<Route exact path="/">
+								<Redirect to="/login" />
+							</Route>
+							<Route exact path="/EAS">
+								<EAS2 />
+							</Route>
 
-						<Route exact path="/logout">
-							<Logout />
-						</Route>
-					</IonRouterOutlet>
-				</IonReactRouter>
-			</IonApp>
-		</AuthClientProvider>
+							<Route exact path="/logout">
+								<Logout />
+							</Route>
+						</IonRouterOutlet>
+					</IonReactRouter>
+				</IonApp>
+			</AuthClientProvider>
+		</DAppProvider>
 	);
 };
 
