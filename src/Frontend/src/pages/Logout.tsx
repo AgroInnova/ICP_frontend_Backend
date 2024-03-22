@@ -25,7 +25,17 @@ const Logout: React.FC = () => {
 					<IonCardContent>
 						<IonText>You have successfully logged out.</IonText>
 					</IonCardContent>
+
+					
 				</IonCard>
+
+				<IonCard>
+					<IonCardContent>
+						<IonText>Log in again</IonText>
+						<IonButton routerLink="/login">Login</IonButton>
+					</IonCardContent>		
+				</IonCard>
+			
 			</IonContent>
 		</IonPage>
 	);

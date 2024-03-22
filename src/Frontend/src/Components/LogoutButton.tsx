@@ -1,11 +1,13 @@
 import { IonButton } from "@ionic/react";
-import { useAuthClientUpdate } from "../AuthClientProvider";
+import { useAuthClientUpdate, useUser } from "../AuthClientProvider";
 import { useHistory } from "react-router";
 
 const LogoutButton: React.FC = () => {
-	const {logout} = useAuthClientUpdate();
+	const { logout } = useAuthClientUpdate();
+	const { setUser } = useUser();
 	const history = useHistory();
 	const logoutactions = async () => {
+		setUser(null);
 		logout();
 		history.push("/logout");
 	};

@@ -24,7 +24,7 @@ export default Server(() => {
 		if (ic.caller().toString() === principalAdmin) {
 			res.send({ type: "admin" });
 		}
-		res.send({ type: "user", caller: ic.caller().toString() });
+		res.send({ type: "user" });
 	});
 
 	return app.listen();

@@ -1,11 +1,8 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { AuthClient } from "@dfinity/auth-client";
+import { IonProgressBar } from "@ionic/react";
 
 const AuthClientContext = createContext<AuthClient | null>(null);
-const AuthClientUpdateContext = createContext<{
-	logout: () => Promise<void>;
-	login: () => Promise<void>;
-} | null>(null);
 
 export const useAuthClient = () => {
 	const context = useContext(AuthClientContext);
@@ -17,6 +14,11 @@ export const useAuthClient = () => {
 	return context;
 };
 
+const AuthClientUpdateContext = createContext<{
+	logout: () => Promise<void>;
+	login: () => Promise<void>;
+} | null>(null);
+
 export const useAuthClientUpdate = () => {
 	const context = useContext(AuthClientUpdateContext);
 	if (context === null) {
@@ -27,10 +29,25 @@ export const useAuthClientUpdate = () => {
 	return context;
 };
 
+const UserContext = createContext<{
+	user: boolean | null;
+	setUser: React.Dispatch<React.SetStateAction<boolean | null>>;
+} | null>(null);
+
+export const useUser = () => {
+	const context = useContext(UserContext);
+	if (context === null) {
+		throw new Error("useUser must be used within a AuthClientProvider");
+	}
+	return context;
+};
+
 export const AuthClientProvider: React.FC<React.PropsWithChildren<{}>> = ({
 	children,
 }) => {
 	const [authClient, setAuthClient] = useState<AuthClient | null>(null);
+
+	const [user, setUser] = useState<boolean | null>(null);
 
 	const logout = async () => {
 		if (authClient) {
@@ -69,14 +86,15 @@ export const AuthClientProvider: React.FC<React.PropsWithChildren<{}>> = ({
 	}, []);
 
 	if (!authClient) {
-		// You can return a loading spinner or some other placeholder component here
-		return <>error</>;
+		return <IonProgressBar type="indeterminate"></IonProgressBar>;
 	}
 
 	return (
 		<AuthClientContext.Provider value={authClient}>
 			<AuthClientUpdateContext.Provider value={{ logout, login }}>
-				{children}
+				<UserContext.Provider value={{ user, setUser }}>
+					{children}
+				</UserContext.Provider>
 			</AuthClientUpdateContext.Provider>
 		</AuthClientContext.Provider>
 	);

@@ -1,25 +1,42 @@
 import { useEffect } from "react";
-import { useAuthClient, useAuthClientUpdate } from "../AuthClientProvider";
+import {
+	useAuthClient,
+	useAuthClientUpdate,
+	useUser,
+} from "../AuthClientProvider";
 import { toJwt } from "azle/http_client";
-import { IonButton } from "@ionic/react";
-import LogoutButton from "../Components/LogoutButton";
-import Header from "../Components/Header";
+import { IonProgressBar } from "@ionic/react";
+
+import { useHistory } from "react-router";
+
+type UserType = {
+	type: "admin" | "user";
+};
 
 const LoginPage: React.FC = () => {
-	console.log("entro a loginpage");
+	const { user, setUser } = useUser();
+
+	const { login } = useAuthClientUpdate();
 
 	const authClient = useAuthClient();
 
+	const history = useHistory();
+
 	useEffect(() => {
-		console.log("LoginPage: useEffect: authClient: ", authClient);
 		const fetchAuthStatus = async () => {
-			console.log(
-				"LoginPage: useEffect: authClient.isAuthenticated: ",
-				await authClient.isAuthenticated()
-			);
+			const isAuth = await authClient.isAuthenticated();
+
+			if (isAuth === false) {
+				login();
+				refreshPage();
+			}
+
+			if (isAuth === true) {
+				whoamiAuthenticated();
+			}
 		};
 		fetchAuthStatus();
-	}, [authClient]);
+	}, [authClient, user]);
 
 	const whoamiAuthenticated = async () => {
 		const response = await fetch(
@@ -29,19 +46,26 @@ const LoginPage: React.FC = () => {
 				headers: [["Authorization", toJwt(authClient.getIdentity())]],
 			}
 		);
-		const responseText = await response.text();
-		console.log(
-			"LoginPage: whoamiAuthenticated: responseText: ",
-			responseText
-		);
+		const responseText: UserType = await response.json();
+
+		if (responseText.type === "admin") {
+			setUser(true);
+
+			history.push("/home");
+		}
+		if (responseText.type === "user") {
+			setUser(false);
+			history.push("/home");
+		}
+	};
+
+	const refreshPage = () => {
+		window.location.reload();
 	};
 
 	return (
 		<>
-			<Header />
-			<IonButton onClick={whoamiAuthenticated}>authbackend</IonButton>
-
-			<LogoutButton />
+			<IonProgressBar type="indeterminate"></IonProgressBar>
 		</>
 	);
 };

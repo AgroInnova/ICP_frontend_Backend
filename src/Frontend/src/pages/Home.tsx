@@ -6,27 +6,19 @@ import {
 	IonToolbar,
 } from "@ionic/react";
 import "./Home.css";
+import Header from "../Components/Header";
+import { useAuthClient } from "../AuthClientProvider";
 const Home: React.FC = () => {
+	console.log("entro a home");
 
+	const authClient = useAuthClient();
 
-	console.log('entro a home');
-
+	console.log(authClient.getIdentity().getPrincipal().toText());
 
 	return (
-		<IonPage>
-			<IonHeader>
-				<IonToolbar>
-					<IonTitle>Blank</IonTitle>
-				</IonToolbar>
-			</IonHeader>
-			<IonContent fullscreen>
-				<IonHeader collapse="condense">
-					<IonToolbar>
-						<IonTitle size="large">Blank</IonTitle>
-					</IonToolbar>
-				</IonHeader>
-			</IonContent>
-		</IonPage>
+		<>
+			<Header />
+		</>
 	);
 };
 
