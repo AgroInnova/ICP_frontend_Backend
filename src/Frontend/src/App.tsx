@@ -23,17 +23,14 @@ import "@ionic/react/css/display.css";
 import "./theme/variables.css";
 import LoginPage from "./pages/LoginPage";
 import { AuthClientProvider } from "./AuthClientProvider";
-import EAS from "./pages/EAS";
 import Logout from "./pages/Logout";
-import EAS2 from "./pages/EAS copy";
 
 import {
-	Mainnet,
 	DAppProvider,
 	Config,
 	ScrollSepoliaTestnet
 } from "@usedapp/core";
-import { getDefaultProvider } from "ethers";
+import EAS from "./pages/EAS copy";
 
 const NodeURL = ScrollSepoliaTestnet.rpcUrl as string;
 
@@ -63,7 +60,7 @@ const App: React.FC = () => {
 								<Redirect to="/login" />
 							</Route>
 							<Route exact path="/EAS">
-								<EAS2 />
+								<EAS />
 							</Route>
 
 							<Route exact path="/logout">

@@ -11,7 +11,8 @@
     "start": "npm start --workspaces --if-present",
     "test": "npm test --workspaces --if-present",
     "ionicDev": "bash createEnv.sh && cd src/Frontend && ionic serve",
-    "ionicBuild": "bash createEnv.sh && cd src/Frontend && npm run build"
+    "ionicBuild": "bash createEnv.sh && cd src/Frontend && npm run build",
+    "typechain:generate": "cd src/Frontend && npm run typechain --target=ethers-v5 ./src/abi/**/*.json --out-dir=./gen/types"
   },
   "type": "module",
   "workspaces": [
@@ -21,10 +22,5 @@
   "devDependencies": {
     "@types/cors": "^2.8.17",
     "@types/express": "^4.17.21"
-  },
-  "dependencies": {
-    "@ethersproject/units": "^5.7.0",
-    "@usedapp/core": "^1.2.13",
-    "ethers": "^5.7.2"
   }
 }

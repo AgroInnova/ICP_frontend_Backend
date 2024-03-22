@@ -15,7 +15,12 @@ import {
 import React, { useEffect, useState } from "react";
 import Header from "../Components/Header";
 
-import { useEtherBalance, useEthers, useCall, useSendTransaction } from "@usedapp/core";
+import {
+	useEtherBalance,
+	useEthers,
+	useSendTransaction,
+	useContractFunction,
+} from "@usedapp/core";
 import { formatEther } from "@ethersproject/units";
 
 import { utils } from "ethers";
@@ -155,10 +160,12 @@ const ContractABI = [
 ] as const;
 
 const contractInterface = new utils.Interface(ContractABI);
-const contractAdress = "0x9eb3C959ED45B6A18Bd19C88ff70220F7D95dc40";
-const contractEAS = new Contract(contractAdress, contractInterface);
 
-const EAS2: React.FC = () => {
+const contractAdress = "0x9eb3C959ED45B6A18Bd19C88ff70220F7D95dc40";
+
+const contract = new Contract(contractAdress, contractInterface);
+
+const EAS: React.FC = () => {
 	const { account, activateBrowserWallet, deactivate, chainId } = useEthers();
 
 	const userBalance = useEtherBalance(account);
@@ -172,7 +179,30 @@ const EAS2: React.FC = () => {
 	const [contractParams, setContractParams] =
 		useState<[number, string, number]>();
 
-	const { sendTransaction, state } = useSendTransaction();
+	const { sendTransaction, state, resetState } = useSendTransaction({
+		transactionName: "createServiceAttestation",
+	});
+
+	const handleClick = () => {
+		if (!contractParams) {
+			alert("Contract parameters are not set");
+			return;
+		}
+
+		const [_user, _equipmentId, _activationDays] = contractParams;
+
+		const data = contract.interface.encodeFunctionData(
+			"createServiceAttestation",
+			[_user, _equipmentId, _activationDays]
+		);
+
+		console.log(data);
+
+		sendTransaction({
+			to: "0x9eb3C959ED45B6A18Bd19C88ff70220F7D95dc40",
+			data: data,
+		});
+	};
 
 	useEffect(() => {
 		activateBrowserWallet();
@@ -295,15 +325,11 @@ const EAS2: React.FC = () => {
 						<IonRow className="ion-justify-content-center">
 							<IonButton type="submit">Registrar</IonButton>
 						</IonRow>
-					</form>
-
-					<IonRow className="ion-justify-content-center">
-						<IonButton>Seleccionar usuario</IonButton>
-					</IonRow>
+					</form>					
 				</IonCol>
 			</IonGrid>
 		</>
 	);
 };
 
-export default EAS2;
+export default EAS;
