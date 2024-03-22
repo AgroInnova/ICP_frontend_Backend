@@ -21,26 +21,40 @@ import "@ionic/react/css/display.css";
 
 /* Theme variables */
 import "./theme/variables.css";
-import { LoginPage } from "./pages/LoginPage";
+import LoginPage from "./pages/LoginPage";
+import { AuthClientProvider } from "./AuthClientProvider";
+import EAS from "./pages/EAS";
+import Logout from "./pages/Logout";
 
 setupIonicReact();
 
-const App: React.FC = () => (
-	<IonApp>
-		<IonReactRouter>
-			<IonRouterOutlet>
-				<Route exact path="/login">
-					<LoginPage />
-				</Route>
-				<Route exact path="/home">
-					<Home />
-				</Route>
-				<Route exact path="/">
-					<Redirect to="/login" />
-				</Route>
-			</IonRouterOutlet>
-		</IonReactRouter>
-	</IonApp>
-);
+const App: React.FC = () => {
+	return (
+		<AuthClientProvider>
+			<IonApp>
+				<IonReactRouter>
+					<IonRouterOutlet>
+						<Route exact path="/login">
+							<LoginPage />
+						</Route>
+						<Route exact path="/home">
+							<Home />
+						</Route>
+						<Route exact path="/">
+							<Redirect to="/login" />
+						</Route>
+						<Route exact path="/EAS">
+							<EAS />
+						</Route>
+
+						<Route exact path="/logout">
+							<Logout />
+						</Route>
+					</IonRouterOutlet>
+				</IonReactRouter>
+			</IonApp>
+		</AuthClientProvider>
+	);
+};
 
 export default App;

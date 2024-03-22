@@ -1,36 +1,28 @@
 import React, { useState, useEffect } from "react";
 import { Identity } from "@dfinity/agent";
 import { AuthClient } from "@dfinity/auth-client";
-import { toJwt } from "azle/http_client"
+import { toJwt } from "azle/http_client";
 import { IonButton } from "@ionic/react";
-import { CapacitorCookiesPluginWeb } from "@capacitor/core/types/core-plugins";
 
 const AzleApp: React.FC = () => {
-	const [authClient, setAuthClient] = useState<AuthClient>();
-	const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
-
-	const [identity, setIdentity] = useState<Identity>();
+	const [identity, setIdentity] = useState<Identity | null>(null);
 	const [whoami, setWhoami] = useState<string>("");
 
 	useEffect(() => {
-		(async () => {
-			const authClient = await AuthClient.create();
-			setAuthClient(authClient);
-			async () => {
-				const isAuthenticated = await authClient.isAuthenticated();
-				setIsAuthenticated(isAuthenticated);
-			};
-		})();
+		authenticate();
 	}, []);
 
-	// useEffect(() => {
-	// 	if (authClient) {
-	// 		(async () => {
-	// 			const isAuthenticated = await authClient.isAuthenticated();
-	// 			setIsAuthenticated(isAuthenticated);
-	// 		})();
-	// 	}
-	// }, [authClient]);
+	const authenticate = async () => {
+		const authClient = await AuthClient.create();
+
+		const isAuthenticated = await authClient.isAuthenticated();
+
+		if (isAuthenticated === true) {
+			handleIsAuthenticated(authClient);
+		} else {
+			await handleIsNotAuthenticated(authClient);
+		}
+	};
 
 	const handleIsAuthenticated = (authClient: AuthClient) => {
 		setIdentity(authClient.getIdentity());
@@ -71,26 +63,32 @@ const AzleApp: React.FC = () => {
 		setWhoami(responseText);
 	};
 
+	const logout = async () => {
+		const authClient = await AuthClient.create();
+		await authClient.logout();
+		setIdentity(null);
+	};
+
 	return (
 		<div>
+			asdfasdfasdf
 			<h1>Internet Identity</h1>
 			<h2>
 				Whoami principal:
 				<span id="whoamiPrincipal">{whoami}</span>
 			</h2>
-
-			<IonButton onClick={whoamiUnauthenticated}>
-				{" "}
-				Whoami Unathenticated
-			</IonButton>
-			<IonButton
+			<button id="whoamiUnauthenticated" onClick={whoamiUnauthenticated}>
+				Whoami Unauthenticated
+			</button>
+			<button
+				id="whoamiAuthenticated"
 				onClick={whoamiAuthenticated}
 				disabled={identity === null}
 			>
 				Whoami Authenticated
-			</IonButton>
-
-			<IonButton>Logout</IonButton>
+			</button>
+			<IonButton onClick={logout}>Logout</IonButton>
+			<IonButton onClick={authenticate}>login</IonButton>
 		</div>
 	);
 };

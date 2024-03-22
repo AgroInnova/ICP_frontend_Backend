@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Get the values
-CANISTER_ORIGIN=$(dfx canister id ICP_frontend_backend_FULL_backend)
+CANISTER_ORIGIN=$(dfx canister id backend)
 WEBSERVER_PORT=$(dfx info webserver-port)
 IDENTITY_PROVIDER=$(dfx canister id internet_identity)
 

@@ -6,10 +6,11 @@ import {
 	IonToolbar,
 } from "@ionic/react";
 import "./Home.css";
-import AzleApp from "../Components/AzleApp";
-import { LoginPage } from "./LoginPage";
-
 const Home: React.FC = () => {
+
+
+	console.log('entro a home');
+
 
 	return (
 		<IonPage>

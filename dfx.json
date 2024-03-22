@@ -1,14 +1,13 @@
 {
   "canisters": {
-    "ICP_frontend_backend_FULL_backend": {
-      "build": "npx azle ICP_frontend_backend_FULL_backend",
-      "candid": "src/ICP_frontend_backend_FULL_backend/ICP_frontend_backend_FULL_backend.did",
+    "backend": {
+      "build": "npx azle backend",
+      "candid": "src/ICP_frontend_backend_FULL_backend/backend.did",
       "candid_gen": "http",
       "gzip": true,
       "main": "src/ICP_frontend_backend_FULL_backend/src/index.ts",
       "type": "custom",
-      "wasm": ".azle/ICP_frontend_backend_FULL_backend/ICP_frontend_backend_FULL_backend.wasm",
-      "assets" : [["src/Frontend/dist", "dist"]],
+      "wasm": ".azle/backend/backend.wasm",
       "build_assets": "npm run ionicBuild"
     },
     "internet_identity": {
@@ -21,6 +20,14 @@
       },
       "type": "custom",
       "wasm": "https://github.com/dfinity/internet-identity/releases/latest/download/internet_identity_dev.wasm.gz"
+    },
+    "frontend": {
+      "dependencies": ["backend"],
+      "frontend": {
+        "entrypoint": "src/Frontend/dist/index.html"
+      },
+      "source": ["src/Frontend/dist"],
+      "type": "assets"
     }
   },
   "defaults": {
