@@ -8,7 +8,7 @@
       "main": "src/ICP_frontend_backend_FULL_backend/src/index.ts",
       "type": "custom",
       "wasm": ".azle/backend/backend.wasm",
-      "build_assets": "npm run ionicBuild"
+      "build_assets": "bash createEnv.sh"
     },
     "internet_identity": {
       "candid": "https://github.com/dfinity/internet-identity/releases/latest/download/internet_identity.did",

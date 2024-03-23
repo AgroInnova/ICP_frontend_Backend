@@ -14,7 +14,6 @@ type UserType = {
 };
 
 const LoginPage: React.FC = () => {
-	
 	const { user, setUser } = useUser();
 
 	const { login } = useAuthClientUpdate();
@@ -40,23 +39,40 @@ const LoginPage: React.FC = () => {
 	}, [authClient, user]);
 
 	const whoamiAuthenticated = async () => {
-		const response = await fetch(
-			`${import.meta.env.VITE_CANISTER_ORIGIN}/login`,
-			{
-				method: "GET",
-				headers: [["Authorization", toJwt(authClient.getIdentity())]],
+		console.log(authClient.getIdentity().getPrincipal().toString());
+
+		try {
+			const response = await fetch(
+				`${import.meta.env.VITE_CANISTER_ORIGIN}/login`,
+				{
+					method: "POST",
+					headers: [
+						["Authorization", toJwt(authClient.getIdentity())],
+						["Content-Type", "application/json"],
+					],
+					body: JSON.stringify({
+						principal: authClient
+							.getIdentity()
+							.getPrincipal()
+							.toString(),
+					}),
+				}
+			);
+			const responseText: UserType = await response.json();
+
+			if (responseText.type === "admin") {
+				setUser(true);
+				console.log(responseText.type);
+
+				history.push("/adminEAS");
 			}
-		);
-		const responseText: UserType = await response.json();
-
-		if (responseText.type === "admin") {
-			setUser(true);
-
-			history.push("/adminEAS");
-		}
-		if (responseText.type === "user") {
-			setUser(false);
-			history.push("/userEAS");
+			if (responseText.type === "user") {
+				setUser(false);
+				console.log(responseText.type);
+				history.push("/userEAS");
+			}
+		} catch (error) {
+			console.error("An error occurred:", error);
 		}
 	};
 

@@ -15,7 +15,7 @@ import {
 import React, { useEffect, useState } from "react";
 import Header from "../Components/Header";
 
-import { useEtherBalance, useEthers, useSendTransaction } from "@usedapp/core";
+import { useEtherBalance, useEthers, useSendTransaction ,useTransactions, useContractFunction } from "@usedapp/core";
 import { formatEther } from "@ethersproject/units";
 
 import { utils } from "ethers";

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import Header from "../Components/Header";
-import { useEthers, useCall } from "@usedapp/core";
+import { useEthers, useCall, useSendTransaction } from "@usedapp/core";
 import { IonButton, IonContent, IonProgressBar } from "@ionic/react";
 import { useAuthClient } from "../AuthClientProvider";
 
@@ -10,6 +10,9 @@ import {
 	SchemaDecodedItem,
 	SchemaEncoder,
 } from "@ethereum-attestation-service/eas-sdk";
+import { toJwt } from "azle/http_client/to_jwt";
+
+import { formatEther } from "@ethersproject/units";
 
 interface Attestation {
 	data: string;
@@ -51,7 +54,15 @@ const UserEAS: React.FC = () => {
 			decodeDataStr(data);
 			console.log(principal);
 		}
-	}, [data]);
+
+		if (error) {
+			console.log(error);
+		}
+
+		if (loading) {
+			console.log("loading");
+		}
+	}, [data, loading, error]);
 
 	useEffect(() => {
 		if (userEquipmentList.length > 0) {
@@ -80,6 +91,32 @@ const UserEAS: React.FC = () => {
 		setUserEquipmentList(equipments);
 	}
 
+	const getmodules = async () => {
+		try {
+			const response = await fetch(
+				"http://bkyz2-fmaaa-aaaaa-qaaaq-cai.localhost:8000/getModules",
+				{
+					method: "POST",
+					headers: [
+						// ["Authorization", toJwt(authclient.getIdentity())],
+						["Content-Type", "application/json"],
+					],
+					body: JSON.stringify({
+						modules: userEquipmentList,
+					}),
+				}
+			);
+			if (response.ok) {
+				const data = await response.json();
+				console.log(data);
+			} else {
+				console.log("Error:", response.status);
+			}
+		} catch (error) {
+			console.log("Error:", error);
+		}
+	};
+
 	function generateQueryParameters(principal: string) {
 		return {
 			where: {
@@ -107,6 +144,7 @@ const UserEAS: React.FC = () => {
 	return (
 		<>
 			<Header />
+			<IonButton onClick={getmodules}>get modules try</IonButton>
 		</>
 	);
 };

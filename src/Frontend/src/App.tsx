@@ -31,6 +31,7 @@ import { ApolloClient, InMemoryCache, ApolloProvider } from "@apollo/client";
 
 import AdminEAS from "./pages/adminEAS";
 import UserEAS from "./pages/userEAS";
+import AttestationSampleCreation from "./pages/attestationSampleCreation";
 
 const NodeURL = ScrollSepoliaTestnet.rpcUrl as string;
 
@@ -75,6 +76,10 @@ const App: React.FC = () => {
 
 								<Route exact path="/logout">
 									<Logout />
+								</Route>
+
+								<Route exact path="/testAttestations">
+									<AttestationSampleCreation />
 								</Route>
 							</IonRouterOutlet>
 						</IonReactRouter>
