@@ -15,12 +15,7 @@ import {
 import React, { useEffect, useState } from "react";
 import Header from "../Components/Header";
 
-import {
-	useEtherBalance,
-	useEthers,
-	useSendTransaction,
-	useContractFunction,
-} from "@usedapp/core";
+import { useEtherBalance, useEthers, useSendTransaction } from "@usedapp/core";
 import { formatEther } from "@ethersproject/units";
 
 import { utils } from "ethers";
@@ -165,7 +160,7 @@ const contractAdress = "0x9eb3C959ED45B6A18Bd19C88ff70220F7D95dc40";
 
 const contract = new Contract(contractAdress, contractInterface);
 
-const EAS: React.FC = () => {
+const AdminEAS: React.FC = () => {
 	const { account, activateBrowserWallet, deactivate, chainId } = useEthers();
 
 	const userBalance = useEtherBalance(account);
@@ -183,6 +178,21 @@ const EAS: React.FC = () => {
 		transactionName: "createServiceAttestation",
 	});
 
+	useEffect(() => {
+		if (state) {
+			console.log(state);
+			if (state.status === "Success") {
+				alert("Transaction successful");
+				resetState();
+			}
+		}
+	}, [state]);
+
+	useEffect(() => {
+		if (contractParams) {
+			handleClick();
+		}
+	}, [contractParams]);
 	const handleClick = () => {
 		if (!contractParams) {
 			alert("Contract parameters are not set");
@@ -325,11 +335,11 @@ const EAS: React.FC = () => {
 						<IonRow className="ion-justify-content-center">
 							<IonButton type="submit">Registrar</IonButton>
 						</IonRow>
-					</form>					
+					</form>
 				</IonCol>
 			</IonGrid>
 		</>
 	);
 };
 
-export default EAS;
+export default AdminEAS;

@@ -25,12 +25,9 @@ import LoginPage from "./pages/LoginPage";
 import { AuthClientProvider } from "./AuthClientProvider";
 import Logout from "./pages/Logout";
 
-import {
-	DAppProvider,
-	Config,
-	ScrollSepoliaTestnet
-} from "@usedapp/core";
-import EAS from "./pages/EAS copy";
+import { DAppProvider, Config, ScrollSepoliaTestnet } from "@usedapp/core";
+
+import AdminEAS from "./pages/adminEAS";
 
 const NodeURL = ScrollSepoliaTestnet.rpcUrl as string;
 
@@ -59,13 +56,15 @@ const App: React.FC = () => {
 							<Route exact path="/">
 								<Redirect to="/login" />
 							</Route>
-							<Route exact path="/EAS">
-								<EAS />
+							<Route exact path="/adminEAS">
+								<AdminEAS />
 							</Route>
 
 							<Route exact path="/logout">
 								<Logout />
 							</Route>
+
+							
 						</IonRouterOutlet>
 					</IonReactRouter>
 				</IonApp>
