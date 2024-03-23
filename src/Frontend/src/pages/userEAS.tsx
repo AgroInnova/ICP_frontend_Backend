@@ -49,6 +49,7 @@ const UserEAS: React.FC = () => {
 	useEffect(() => {
 		if (data) {
 			decodeDataStr(data);
+			console.log(principal);
 		}
 	}, [data]);
 
