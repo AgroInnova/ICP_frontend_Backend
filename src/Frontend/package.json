@@ -12,6 +12,7 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@apollo/client": "^3.9.9",
     "@bundly/ares-core": "^0.1.0-rc.0",
     "@bundly/ares-react": "^0.1.0-rc.0",
     "@capacitor/app": "5.0.7",
@@ -22,6 +23,7 @@
     "@dfinity/agent": "^1.1.1",
     "@dfinity/auth-client": "^1.1.1",
     "@dfinity/identity": "^1.1.1",
+    "@ethereum-attestation-service/eas-sdk": "^1.5.0",
     "@ethersproject/units": "^5.7.0",
     "@ionic/react": "^7.0.0",
     "@ionic/react-router": "^7.0.0",
@@ -31,6 +33,7 @@
     "azle": "^0.21.0-rc.0",
     "dotenv": "^16.4.5",
     "ethers": "^5.7.2",
+    "graphql": "^16.8.1",
     "ic-use-internet-identity": "^0.0.10",
     "ionicons": "^7.0.0",
     "react": "^18.2.0",

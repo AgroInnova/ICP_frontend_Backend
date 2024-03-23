@@ -14,6 +14,7 @@ type UserType = {
 };
 
 const LoginPage: React.FC = () => {
+	
 	const { user, setUser } = useUser();
 
 	const { login } = useAuthClientUpdate();
@@ -51,11 +52,11 @@ const LoginPage: React.FC = () => {
 		if (responseText.type === "admin") {
 			setUser(true);
 
-			history.push("/home");
+			history.push("/adminEAS");
 		}
 		if (responseText.type === "user") {
 			setUser(false);
-			history.push("/home");
+			history.push("/userEAS");
 		}
 	};
 

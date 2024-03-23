@@ -20,159 +20,50 @@ import { formatEther } from "@ethersproject/units";
 
 import { utils } from "ethers";
 import { Contract } from "@ethersproject/contracts";
+import { useAuthClient } from "../AuthClientProvider";
+
 const ContractABI = [
 	{
 		inputs: [
-			{
-				internalType: "uint64",
-				name: "_userId",
-				type: "uint64",
-			},
-			{
-				internalType: "uint64",
-				name: "_equipmentId",
-				type: "uint64",
-			},
-			{
-				internalType: "uint32",
-				name: "_activationDays",
-				type: "uint32",
-			},
-		],
-		name: "addEntry",
-		outputs: [],
-		stateMutability: "nonpayable",
-		type: "function",
-	},
-	{
-		inputs: [
-			{
-				internalType: "uint256",
-				name: "",
-				type: "uint256",
-			},
-		],
-		name: "attestationsArray",
-		outputs: [
-			{
-				internalType: "uint64",
-				name: "userId",
-				type: "uint64",
-			},
-			{
-				internalType: "uint64",
-				name: "equipmentId",
-				type: "uint64",
-			},
-			{
-				internalType: "uint32",
-				name: "activationDays",
-				type: "uint32",
-			},
-		],
-		stateMutability: "view",
-		type: "function",
-	},
-	{
-		inputs: [],
-		name: "attestationsCount",
-		outputs: [
-			{
-				internalType: "uint256",
-				name: "",
-				type: "uint256",
-			},
-		],
-		stateMutability: "view",
-		type: "function",
-	},
-	{
-		inputs: [
-			{
-				internalType: "uint64",
-				name: "_user",
-				type: "uint64",
-			},
-			{
-				internalType: "uint64",
-				name: "_equipmentId",
-				type: "uint64",
-			},
-			{
-				internalType: "uint32",
-				name: "_activationDays",
-				type: "uint32",
-			},
+			{ internalType: "string", name: "_user", type: "string" },
+			{ internalType: "uint32", name: "_equipmentId", type: "uint32" },
+			{ internalType: "uint32", name: "_activationDays", type: "uint32" },
 		],
 		name: "createServiceAttestation",
-		outputs: [
-			{
-				internalType: "bytes32",
-				name: "",
-				type: "bytes32",
-			},
-		],
+		outputs: [{ internalType: "bytes32", name: "", type: "bytes32" }],
 		stateMutability: "nonpayable",
-		type: "function",
-	},
-	{
-		inputs: [
-			{
-				internalType: "uint64",
-				name: "_userId",
-				type: "uint64",
-			},
-		],
-		name: "getAttestationsByUserId",
-		outputs: [
-			{
-				components: [
-					{
-						internalType: "uint64",
-						name: "userId",
-						type: "uint64",
-					},
-					{
-						internalType: "uint64",
-						name: "equipmentId",
-						type: "uint64",
-					},
-					{
-						internalType: "uint32",
-						name: "activationDays",
-						type: "uint32",
-					},
-				],
-				internalType:
-					"struct ServiceActivationAttestation.Attestations[]",
-				name: "",
-				type: "tuple[]",
-			},
-		],
-		stateMutability: "view",
 		type: "function",
 	},
 ] as const;
 
 const contractInterface = new utils.Interface(ContractABI);
 
-const contractAdress = "0x9eb3C959ED45B6A18Bd19C88ff70220F7D95dc40";
+const contractAdress = "0x139D0f3f24283bC2012f79d9915989Ea9b33a62a";
 
-const contract = new Contract(contractAdress, contractInterface);
+export const contract = new Contract(contractAdress, contractInterface);
 
 const AdminEAS: React.FC = () => {
+	const authclient = useAuthClient();
+
+	const [principal, setPrincipal] = useState<string>();
+
+	const onclickprincipal = () => {
+		setPrincipal(authclient.getIdentity().getPrincipal().toString());
+		setUserID(authclient.getIdentity().getPrincipal().toString());
+	};
+
 	const { account, activateBrowserWallet, deactivate, chainId } = useEthers();
 
 	const userBalance = useEtherBalance(account);
 
-	const [userID, setUserID] = useState<number>();
+	const [userID, setUserID] = useState<string>();
 
-	const [equipmentID, setEquipmentID] = useState<string>("0");
+	const [equipmentID, setEquipmentID] = useState<number>();
 
 	const [activationDays, setActivationDays] = useState<number>();
 
 	const [contractParams, setContractParams] =
-		useState<[number, string, number]>();
+		useState<[string, number, number]>();
 
 	const { sendTransaction, state, resetState } = useSendTransaction({
 		transactionName: "createServiceAttestation",
@@ -180,7 +71,6 @@ const AdminEAS: React.FC = () => {
 
 	useEffect(() => {
 		if (state) {
-			console.log(state);
 			if (state.status === "Success") {
 				alert("Transaction successful");
 				resetState();
@@ -193,6 +83,7 @@ const AdminEAS: React.FC = () => {
 			handleClick();
 		}
 	}, [contractParams]);
+
 	const handleClick = () => {
 		if (!contractParams) {
 			alert("Contract parameters are not set");
@@ -206,10 +97,8 @@ const AdminEAS: React.FC = () => {
 			[_user, _equipmentId, _activationDays]
 		);
 
-		console.log(data);
-
 		sendTransaction({
-			to: "0x9eb3C959ED45B6A18Bd19C88ff70220F7D95dc40",
+			to: "0x139D0f3f24283bC2012f79d9915989Ea9b33a62a",
 			data: data,
 		});
 	};
@@ -230,9 +119,9 @@ const AdminEAS: React.FC = () => {
 
 	return (
 		<>
-			{/* <Header /> */}
+			<Header />
 			<IonGrid>
-				<IonCol size="">
+				<IonCol>
 					<IonRow className="ion-justify-content-center">
 						<IonCard>
 							<IonCardContent>
@@ -293,9 +182,10 @@ const AdminEAS: React.FC = () => {
 							<IonCard>
 								<IonCardContent>
 									<IonInput
-										type="number"
+										type="text"
+										value={principal}
 										onIonChange={(e) => {
-											setUserID(Number(e.detail.value));
+											setUserID(String(e.detail.value));
 										}}
 										placeholder="User ID"
 									></IonInput>
@@ -306,10 +196,10 @@ const AdminEAS: React.FC = () => {
 							<IonCard>
 								<IonCardContent>
 									<IonInput
-										type="text"
+										type="number"
 										onIonChange={(e) => {
 											setEquipmentID(
-												String(e.detail.value)
+												Number(e.detail.value)
 											);
 										}}
 										placeholder="Equipment ID"
@@ -334,6 +224,25 @@ const AdminEAS: React.FC = () => {
 						</IonRow>
 						<IonRow className="ion-justify-content-center">
 							<IonButton type="submit">Registrar</IonButton>
+						</IonRow>
+
+						<IonRow className="ion-justify-content-center">
+							<IonCardContent>
+								<IonText>
+									{authclient
+										.getIdentity()
+										.getPrincipal()
+										.toString()}
+								</IonText>
+							</IonCardContent>
+						</IonRow>
+
+						<IonRow className="ion-justify-content-center">
+							<IonCardContent>
+								<IonButton onClick={onclickprincipal}>
+									SetearID como principal
+								</IonButton>
+							</IonCardContent>
 						</IonRow>
 					</form>
 				</IonCol>

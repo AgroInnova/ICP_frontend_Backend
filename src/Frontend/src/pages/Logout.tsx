@@ -12,7 +12,7 @@ import {
 } from "@ionic/react";
 
 const Logout: React.FC = () => {
-	console.log('entro a logout');
+	
 	return (
 		<IonPage>
 			<IonHeader>

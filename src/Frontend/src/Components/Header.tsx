@@ -8,15 +8,8 @@ import {
 	IonMenuButton,
 } from "@ionic/react";
 import LogoutButton from "./LogoutButton";
-import { useUser } from "../AuthClientProvider";
-import { useEffect } from "react";
 
 const Header: React.FC = () => {
-	const { user } = useUser();
-
-	useEffect(() => {
-		console.log('is adming?',user);
-	}, [user]);
 
 	return (
 		<>

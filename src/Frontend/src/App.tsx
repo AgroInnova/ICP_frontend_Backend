@@ -27,7 +27,10 @@ import Logout from "./pages/Logout";
 
 import { DAppProvider, Config, ScrollSepoliaTestnet } from "@usedapp/core";
 
+import { ApolloClient, InMemoryCache, ApolloProvider } from "@apollo/client";
+
 import AdminEAS from "./pages/adminEAS";
+import UserEAS from "./pages/userEAS";
 
 const NodeURL = ScrollSepoliaTestnet.rpcUrl as string;
 
@@ -38,38 +41,47 @@ const config: Config = {
 	},
 };
 
+const client = new ApolloClient({
+	uri: "https://scroll-sepolia.easscan.org/graphql",
+	cache: new InMemoryCache(),
+});
+
 setupIonicReact();
 
 const App: React.FC = () => {
 	return (
-		<DAppProvider config={config}>
-			<AuthClientProvider>
-				<IonApp>
-					<IonReactRouter>
-						<IonRouterOutlet>
-							<Route exact path="/login">
-								<LoginPage />
-							</Route>
-							<Route exact path="/home">
-								<Home />
-							</Route>
-							<Route exact path="/">
-								<Redirect to="/login" />
-							</Route>
-							<Route exact path="/adminEAS">
-								<AdminEAS />
-							</Route>
+		<ApolloProvider client={client}>
+			<DAppProvider config={config}>
+				<AuthClientProvider>
+					<IonApp>
+						<IonReactRouter>
+							<IonRouterOutlet>
+								<Route exact path="/login">
+									<LoginPage />
+								</Route>
+								<Route exact path="/home">
+									<Home />
+								</Route>
+								<Route exact path="/">
+									<Redirect to="/login" />
+								</Route>
+								<Route exact path="/adminEAS">
+									<AdminEAS />
+								</Route>
 
-							<Route exact path="/logout">
-								<Logout />
-							</Route>
+								<Route exact path="/userEAS">
+									<UserEAS />
+								</Route>
 
-							
-						</IonRouterOutlet>
-					</IonReactRouter>
-				</IonApp>
-			</AuthClientProvider>
-		</DAppProvider>
+								<Route exact path="/logout">
+									<Logout />
+								</Route>
+							</IonRouterOutlet>
+						</IonReactRouter>
+					</IonApp>
+				</AuthClientProvider>
+			</DAppProvider>
+		</ApolloProvider>
 	);
 };
 
