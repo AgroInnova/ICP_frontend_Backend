@@ -1,5 +1,6 @@
 import { ic, Principal, Server } from "azle";
 import express from "express";
+import { Request } from "express";
 import cors from "cors";
 
 const principalAdmin: String =
@@ -27,23 +28,27 @@ export default Server(() => {
 
 	app.use(cors());
 
-	app.post("/sensorData", (req: express.Request<{}, {}, SensorData>, res) => {
-		const message: SensorData = req.body;
-		const index = sensorData.findIndex(
-			(item) => item.Ic_cliente === message.client
-		);
+	app.post("/sensorData", (req: Request, res) => {
+		const message = req.header;
 
-		if (index !== -1) {
-			sensorData[index].data.push(message);
-		} else {
-			sensorData.push({
-				Ic_cliente: message.client,
-				data: [message],
-			});
-		}
+		console.log(message);
 
-		console.log(sensorData);
 		res.sendStatus(200);
+		// const index = sensorData.findIndex(
+		// 	(item) => item.Ic_cliente === message.client
+		// );
+
+		// if (index !== -1) {
+		// 	sensorData[index].data.push(message);
+		// } else {
+		// 	sensorData.push({
+		// 		Ic_cliente: message.client,
+		// 		data: [message],
+		// 	});
+		// }
+
+		// console.log(sensorData);
+		// res.sendStatus(200);
 	});
 
 	app.get("/login", (req, res) => {
@@ -69,6 +74,10 @@ export default Server(() => {
 		} else {
 			res.json([]);
 		}
+	});
+
+	app.get("/getSensorData", (req, res) => {
+		res.json(sensorData);
 	});
 
 	return app.listen();
