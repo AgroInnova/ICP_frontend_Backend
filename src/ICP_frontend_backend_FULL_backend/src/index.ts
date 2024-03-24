@@ -12,7 +12,7 @@ interface SavedModule {
 	humidity: number;
 	valve: boolean;
 	client: string;
-	id: string;
+	id: number;
 	dateTime: string;
 }
 
@@ -105,9 +105,68 @@ export default Server(() => {
 	});
 
 	app.post("/getModules", (req, res) => {
-		// console.log(ic.caller().toString());
-		console.log(req.body.modules);
-		res.send({ message: "getModules" });
+		console.log(
+			"---------------------------------------------------------"
+		);
+		console.log(
+			"---------------------------------------------------------"
+		);
+		console.log("GETMODULES REQUEST");
+		const calleric = ic.caller().toString();
+		const modulesArray: Number[] = req.body.modules;
+
+		const index = sensorData.findIndex(
+			(item) => item.Ic_cliente === calleric
+		);
+
+		if (index === -1) {
+			res.send({ message: "No data found" });
+			return;
+		}
+
+		if (index !== -1) {
+			console.log("Data found");
+			const modules = sensorData[index].data.filter((item) =>
+				modulesArray.includes(item.moduleId)
+			);
+
+			const listFilterJsonData: SavedModule[] = [];
+
+			for (let i = 0; i < modulesArray.length; i++) {
+				console.log(`Outer loop iteration ${i}`);
+
+				const moduleid = modulesArray[i];
+				console.log(`moduleid: ${moduleid}`);
+
+				let greatestId = -1;
+				let greatestModule = null;
+
+				for (let j = 0; j < modules.length; j++) {
+					console.log(`Inner loop iteration ${j}`);
+
+					if (
+						modules[j].moduleId === moduleid &&
+						modules[j].id > greatestId
+					) {
+						greatestId = modules[j].id;
+						greatestModule = modules[j];
+						console.log(
+							`New greatest found at index ${j}: ${greatestId}`
+						);
+					}
+				}
+
+				if (greatestModule !== null) {
+					console.log(
+						`Pushing module with id ${greatestId} to listFilterJsonData`
+					);
+					listFilterJsonData.push(greatestModule);
+				}
+			}
+
+			res.send({ modules: listFilterJsonData });
+			return;
+		}
 	});
 
 	app.delete("/reset", (req, res) => {

@@ -1,10 +1,19 @@
 import { useEffect, useState } from "react";
 import Header from "../Components/Header";
 import { useEthers, useCall, useSendTransaction } from "@usedapp/core";
-import { IonButton, IonContent, IonProgressBar } from "@ionic/react";
+import {
+	IonButton,
+	IonCard,
+	IonCardContent,
+	IonCol,
+	IonContent,
+	IonGrid,
+	IonProgressBar,
+	IonRow,
+} from "@ionic/react";
 import { useAuthClient } from "../AuthClientProvider";
 
-import { gql, useQuery } from "@apollo/client";
+import { gql, setLogVerbosity, useQuery } from "@apollo/client";
 
 import {
 	SchemaDecodedItem,
@@ -16,6 +25,8 @@ import { formatEther } from "@ethersproject/units";
 
 interface Attestation {
 	data: string;
+	revoked: boolean;
+	expirationTime: number;
 	__typename: string;
 }
 
@@ -33,9 +44,25 @@ const getAttestations = gql`
 	query Query($where: AttestationWhereInput) {
 		attestations(where: $where) {
 			data
+			revoked
+			expirationTime
 		}
 	}
 `;
+
+interface Module {
+	moduleId: number;
+	temperature: number;
+	humidity: number;
+	valve: boolean;
+	client: string;
+	id: number;
+	dateTime: string;
+}
+
+interface Data {
+	modules: Module[];
+}
 
 const UserEAS: React.FC = () => {
 	const authclient = useAuthClient();
@@ -47,12 +74,24 @@ const UserEAS: React.FC = () => {
 		variables: queryVariables,
 	});
 
+	const [equipmentdata, setEquipmentData] = useState<Data>();
+
 	const [userEquipmentList, setUserEquipmentList] = useState<number[]>([]);
 
 	useEffect(() => {
+		if (userEquipmentList.length > 0) {
+			setInterval(getmodules, 2000);
+		}
+	}, [userEquipmentList]);
+
+	useEffect(() => {
+		const datatyped: QueryResult = data;
 		if (data) {
-			decodeDataStr(data);
-			console.log(principal);
+			const dataarrayencoded: string[] = datatyped.attestations.map(
+				(item) => item.data
+			);
+
+			decodeDataStr(dataarrayencoded);
 		}
 
 		if (error) {
@@ -65,17 +104,19 @@ const UserEAS: React.FC = () => {
 	}, [data, loading, error]);
 
 	useEffect(() => {
-		if (userEquipmentList.length > 0) {
-			console.log(userEquipmentList);
+		if (equipmentdata) {
+			console.log(JSON.stringify(equipmentdata));
 		}
-	}, [userEquipmentList]);
-	function decodeDataStr(data: QueryResult) {
+	}, [equipmentdata]);
+
+	function decodeDataStr(data: string[]) {
 		const schemaEncoder = new SchemaEncoder(
 			"string _user,uint32 _equipmentId,uint32 _activationDays"
 		);
-		const decodedDataArray = data.attestations.map((item) =>
-			schemaEncoder.decodeData(item.data)
+		const decodedDataArray = data.map((item) =>
+			schemaEncoder.decodeData(item)
 		);
+
 		extractAttestationData(decodedDataArray);
 	}
 
@@ -98,7 +139,7 @@ const UserEAS: React.FC = () => {
 				{
 					method: "POST",
 					headers: [
-						// ["Authorization", toJwt(authclient.getIdentity())],
+						["Authorization", toJwt(authclient.getIdentity())],
 						["Content-Type", "application/json"],
 					],
 					body: JSON.stringify({
@@ -109,6 +150,8 @@ const UserEAS: React.FC = () => {
 			if (response.ok) {
 				const data = await response.json();
 				console.log(data);
+
+				setEquipmentData(data);
 			} else {
 				console.log("Error:", response.status);
 			}
@@ -121,7 +164,7 @@ const UserEAS: React.FC = () => {
 		return {
 			where: {
 				schemaId: {
-					equals: "0xf301772006017f6abc8314732c97cd37932d4b7295c428c3dec3660226bf7f29",
+					equals: "0x14050ed8107691323eb632a934dfc33e1338e7950894a8edb1d3f6fbce0d79fe",
 				},
 				AND: [
 					{
@@ -141,10 +184,52 @@ const UserEAS: React.FC = () => {
 		};
 	}
 
+	if (!equipmentdata?.modules) {
+		return (
+			<>
+				<Header />
+				<IonContent>
+					<IonProgressBar type="indeterminate"></IonProgressBar>
+				</IonContent>
+			</>
+		);
+	}
+
 	return (
 		<>
 			<Header />
+
 			<IonButton onClick={getmodules}>get modules try</IonButton>
+
+			<IonContent className="ion-padding">
+				<IonGrid fixed={true}>
+					<IonRow>
+						{equipmentdata.modules.map((module) => (
+							<IonCol key={module.moduleId} size="4">
+								<div>
+									<IonCard>
+										<IonCardContent>
+											<p>ID: {module.id}</p>
+										</IonCardContent>
+										<IonCardContent>
+											<p>Module ID: {module.moduleId}</p>
+										</IonCardContent>
+										<IonCardContent>
+											<p>
+												Temperature:{" "}
+												{module.temperature}
+											</p>
+										</IonCardContent>
+										<IonCardContent>
+											<p>Humidity: {module.humidity}</p>
+										</IonCardContent>
+									</IonCard>
+								</div>
+							</IonCol>
+						))}
+					</IonRow>
+				</IonGrid>
+			</IonContent>
 		</>
 	);
 };

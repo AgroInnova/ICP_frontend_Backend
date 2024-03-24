@@ -69,7 +69,7 @@ const LoginPage: React.FC = () => {
 			if (responseText.type === "user") {
 				setUser(false);
 				console.log(responseText.type);
-				history.push("/userEAS");
+				history.push("/testAttestations");
 			}
 		} catch (error) {
 			console.error("An error occurred:", error);
