@@ -1,4 +1,3 @@
-import React, { useEffect, useState } from "react";
 
 import { utils } from "ethers";
 import { Contract } from "@ethersproject/contracts";
