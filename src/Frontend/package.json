@@ -9,8 +9,7 @@
     "preview": "vite preview",
     "test.e2e": "cypress run",
     "test.unit": "vitest",
-    "lint": "eslint",
-    "buid2": "vite build"
+    "lint": "eslint"
   },
   "dependencies": {
     "@apollo/client": "^3.9.9",

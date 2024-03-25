@@ -19,8 +19,6 @@ import {
 	useEtherBalance,
 	useEthers,
 	useSendTransaction,
-	useTransactions,
-	useContractFunction,
 } from "@usedapp/core";
 import { formatEther } from "@ethersproject/units";
 

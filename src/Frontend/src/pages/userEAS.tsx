@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import Header from "../Components/Header";
-import { useEthers, useCall, useSendTransaction } from "@usedapp/core";
 import {
 	IonButton,
 	IonCard,
